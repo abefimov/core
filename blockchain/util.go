@@ -65,34 +65,6 @@ func FindLogByTopic(txReceipt *Receipt, topic common.Hash) (*types.Log, error) {
 	return nil, fmt.Errorf("cannot find topic \"%s\"in transaction", topic.Hex())
 }
 
-func waitForTransactionResult(ctx context.Context, client EthereumClientBackend, logParsePeriod time.Duration, tx *types.Transaction, topic common.Hash) (*types.Log, error) {
-	tk := util.NewImmediateTicker(logParsePeriod)
-	defer tk.Stop()
-
-	for {
-		select {
-		case <-tk.C:
-			var err error
-			tmpRec := &Receipt{}
-			tmpRec.Receipt, err = client.TransactionReceipt(ctx, tx.Hash())
-			if err != nil {
-				if err == ethereum.NotFound {
-					break
-				}
-				return nil, err
-			}
-			logs, err := FindLogByTopic(tmpRec, topic)
-			if err != nil {
-				return nil, err
-			}
-
-			return logs, err
-		case <-ctx.Done():
-			return nil, ctx.Err()
-		}
-	}
-}
-
 func WaitTransactionReceipt(ctx context.Context, client CustomEthereumClient, confirmations int64, logParsePeriod time.Duration, tx *types.Transaction) (*Receipt, error) {
 	tk := util.NewImmediateTicker(logParsePeriod)
 	defer tk.Stop()
