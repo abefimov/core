@@ -81,7 +81,7 @@ func (m *OrderPlaceAmmo) Type() AmmoType {
 
 func (m *OrderPlaceAmmo) Execute(ctx context.Context, ext interface{}) error {
 	mExt := ext.(*marketplaceExt)
-	orderOrError := <-mExt.market.PlaceOrder(ctx, mExt.privateKey, order())
+	orderOrError := mExt.market.PlaceOrder(ctx, mExt.privateKey, order())
 	if orderOrError.Err != nil {
 		return orderOrError.Err
 	}

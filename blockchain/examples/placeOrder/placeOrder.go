@@ -68,7 +68,7 @@ func main() {
 		},
 	}
 
-	res := <-api.Market().PlaceOrder(
+	res := api.Market().PlaceOrder(
 		context.Background(),
 		prv,
 		order,
@@ -86,7 +86,7 @@ func main() {
 	}
 	log.Println("Canceling")
 
-	err = <-api.Market().CancelOrder(context.Background(), prv, ordId)
+	err = api.Market().CancelOrder(context.Background(), prv, ordId)
 
 	if err != nil {
 		log.Fatalln(err)

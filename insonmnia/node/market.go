@@ -93,7 +93,7 @@ func (m *marketAPI) CreateOrder(ctx context.Context, req *pb.BidOrder) (*pb.Orde
 		Benchmarks:    benchStruct,
 	}
 
-	ordOrErr := <-m.remotes.eth.Market().PlaceOrder(ctx, m.remotes.key, order)
+	ordOrErr := m.remotes.eth.Market().PlaceOrder(ctx, m.remotes.key, order)
 	if ordOrErr.Err != nil {
 		return nil, fmt.Errorf("could not place order on blockchain: %s", ordOrErr.Err)
 	}
@@ -119,8 +119,8 @@ func (m *marketAPI) CancelOrder(ctx context.Context, req *pb.ID) (*pb.Empty, err
 		return nil, fmt.Errorf("could not get parse order id %s to BigInt: %s", req.GetId(), err)
 	}
 
-	if err := <-m.remotes.eth.Market().CancelOrder(ctx, m.remotes.key, id); err != nil {
-		return nil, fmt.Errorf("could not get cancel order %s on blockchain: %s", req.GetId(), err)
+	if err := m.remotes.eth.Market().CancelOrder(ctx, m.remotes.key, id); err != nil {
+		return nil, fmt.Errorf("could not get cancel order %s on blockchain: %v", req.GetId(), err)
 	}
 
 	return &pb.Empty{}, nil

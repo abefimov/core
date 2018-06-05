@@ -82,15 +82,15 @@ func (d *dealsAPI) Status(ctx context.Context, id *pb.ID) (*pb.DealInfoReply, er
 }
 
 func (d *dealsAPI) Finish(ctx context.Context, req *pb.DealFinishRequest) (*pb.Empty, error) {
-	if err := <-d.remotes.eth.Market().CloseDeal(ctx, d.remotes.key, req.GetId().Unwrap(), req.GetAddToBlacklist()); err != nil {
-		return nil, fmt.Errorf("could not close deal in blockchain: %s", err)
+	if err := d.remotes.eth.Market().CloseDeal(ctx, d.remotes.key, req.GetId().Unwrap(), req.GetAddToBlacklist()); err != nil {
+		return nil, fmt.Errorf("could not close deal in blockchain: %v", err)
 	}
 
 	return &pb.Empty{}, nil
 }
 
 func (d *dealsAPI) Open(ctx context.Context, req *pb.OpenDealRequest) (*pb.Deal, error) {
-	dealOrErr := <-d.remotes.eth.Market().OpenDeal(ctx, d.remotes.key, req.GetAskID().Unwrap(), req.GetBidID().Unwrap())
+	dealOrErr := d.remotes.eth.Market().OpenDeal(ctx, d.remotes.key, req.GetAskID().Unwrap(), req.GetBidID().Unwrap())
 	if dealOrErr.Err != nil {
 		return nil, fmt.Errorf("could not open deal in blockchain: %s", dealOrErr.Err)
 	}
